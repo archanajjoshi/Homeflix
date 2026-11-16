@@ -2,7 +2,11 @@
 
 Homeflix is a personal media streaming platform project and an infrastructure engineering learning lab.
 
-## Learning notes
+## Project records
+
+- [Host inventory](docs/inventory/hosts.md): measured hardware, operating systems, storage, and network baseline.
+
+## Study notes
 
 - [Day 1: Host Inventory and Linux Baseline](docs/study-notes/day-01-host-inventory-linux-baseline.md)
 
