@@ -42,3 +42,42 @@ terraform.rc
 # Optional: ignore plan files saved before destroying Terraform configuration
 # Uncomment the line below if you want to ignore planout files.
 # planout
+
+# Saved Terraform plans
+*.tfplan
+tfplan
+
+# Local secrets and credentials
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.pem
+*.key
+*.p12
+*.pfx
+/kubeconfig
+/kubeconfig.*
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Node artifacts
+node_modules/
+dist/
+coverage/
+
+# Logs and local databases
+*.log
+*.sqlite
+*.sqlite3
+
+# Personal media and generated data
+/media/
+/data/media/
+
+# OS files
+.DS_Store
