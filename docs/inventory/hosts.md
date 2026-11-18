@@ -17,12 +17,15 @@ The project plan calls for two physical Ubuntu hosts, each running one VM, with 
 
 Both hosts use Wi-Fi on the same home subnet and report the same default gateway. This supports direct LAN communication, subject to Wi-Fi client-isolation and firewall settings. SSH from Host A to Host B works using an SSH config alias.
 
-The Host A inventory also showed a `virbr0` interface and Docker bridge/veth interfaces. These are clues for later inspection, not proof that libvirt or VM networking is configured and working.
+The Host A inventory also showed a `virbr0` interface and Docker bridge/veth interfaces. Day 2 confirmed that `virbr0` is used by the active default libvirt NAT network; VM-to-VM reachability has not been tested. The Docker interfaces remain separate clues for later inspection.
 
 ## Planning implications and open checks
 
 - Capacity is asymmetric: Host B has less RAM and fewer logical CPUs; Host A has more RAM and logical CPUs. Host B has substantially more disk space. Size the cluster for the tighter compute host and reserve resources for each host OS.
 - The hosts run different Ubuntu releases. Confirm compatibility with the selected virtualization and cluster tools; decide whether to standardize before automating both hosts.
-- Both CPUs report hardware virtualization support. Verify KVM, QEMU, libvirt services, permissions, and networks during Day 2.
+- Both CPUs report hardware virtualization support. `/dev/kvm` exists on both, and each user's reported read/write permission check succeeded. These facts establish CPU capability and current-user device access, but do not prove that a QEMU guest can launch.
+- Day 2 package/service checks show different user-space readiness: Host A has QEMU and libvirt packages installed (except the `qemu-kvm` metapackage); its `libvirtd` service was inactive when checked after the live queries, while the relevant libvirt sockets had been listening and the read-only queries succeeded. Host B has none of the queried QEMU/libvirt packages, no `virsh`, and no matching services or sockets. Host B is not ready to provision a VM; validate package selection against its Ubuntu release and the chosen provider before installing.
+- Host A's `default` NAT network is active, persistent, and set to autostart. Its private subnet details are intentionally omitted.
+- Host A has active directory storage pools named `boot`, `default`, and `Downloads`, set to autostart and pointing to standard libvirt boot and image directories plus a user Downloads directory. Pool persistence and usable capacity are not confirmed by the checks so far.
 - Validate actual host load, usable memory, network stability, and VM resource requirements before choosing CPU, RAM, and disk allocations.
 - A two-node K3s design is the target; this inventory alone does not establish high availability or storage resilience.
